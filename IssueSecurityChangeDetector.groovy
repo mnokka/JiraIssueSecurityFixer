@@ -6,6 +6,8 @@
  If user selects "None" in Jira Issue Security selector, how to set
  it back to wished security level
  
+ NOTE: Currently Security level is just force set to prove it is possible to do
+ 
  This is attemp to fix Atlassian bug: 
  https://jira.atlassian.com/browse/JRASERVER-5332?error=login_required&error_description=Login+required&state=ba72a4be-530e-48d7-8608-8714f4684242
  
@@ -14,8 +16,6 @@
 
 Used hardcode IDs for development Jira
 Issue Security Level ID: 10102
-
-
 */
 
 import com.atlassian.jira.component.ComponentAccessor
@@ -43,7 +43,6 @@ def log = Logger.getLogger("IssueSecurityFixer") // change for customer system
 log.setLevel(Level.DEBUG)  // DEBUG INFO
  
 log.debug("---------- IssueSecurityFixer started -----------")
-
 
 
 def util = ComponentAccessor.getUserUtil()
