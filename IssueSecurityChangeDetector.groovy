@@ -54,24 +54,38 @@ log.debug "Something changed in issue: ${issue}"
 def securityLevelManager = ComponentAccessor.getComponent(IssueSecurityLevelManager)
 def securityLevelId = issue.securityLevelId
 
-
 log.debug("Issue Security Level ID: ${securityLevelId}")
-def securityLevelName=securityLevelManager.getIssueSecurityName(securityLevelId)
+
+def securityLevelName="None"
+if (securityLevelId==null) {
+	securityLevelName="None"
+}
+else {
+	securityLevelName=securityLevelManager.getIssueSecurityName(securityLevelId)
+}
+
+	
 log.debug("Current Issue Security: ${securityLevelName}")
 
-// force sets IssueSecurityLevel to this ID ok
-def issueSecurityLevelId=10102
-
-def issueInputParameters = new IssueInputParametersImpl()
-issueInputParameters.setSecurityLevelId(issueSecurityLevelId)
-
-def updateValidationResult = issueService.validateUpdate(loggedInUser, issue.id, issueInputParameters)
-assert updateValidationResult.valid : updateValidationResult.errorCollection
-
-def issueUpdateResult = issueService.update(loggedInUser, updateValidationResult, EventDispatchOption.ISSUE_UPDATED, false)
-assert issueUpdateResult.valid : issueUpdateResult.errorCollection
+if (securityLevelName=="None") {
+	// force sets IssueSecurityLevel to this ID ok
+	def issueSecurityLevelId=10102
 
 
+	def issueInputParameters = new IssueInputParametersImpl()
+	issueInputParameters.setSecurityLevelId(issueSecurityLevelId)
+
+	def updateValidationResult = issueService.validateUpdate(loggedInUser, issue.id, issueInputParameters)
+	assert updateValidationResult.valid : updateValidationResult.errorCollection
+
+	def issueUpdateResult = issueService.update(loggedInUser, updateValidationResult, EventDispatchOption.ISSUE_UPDATED, false)
+	assert issueUpdateResult.valid : issueUpdateResult.errorCollection
+	log.debug("Force set Issue Security id as: ${issueSecurityLevelId}")
+}
+
+else {
+	log.debug("Safe Issue Security change, no action needed")
+}
 
 log.debug("---------- IssueSecurityFixer ended -----------")
 
